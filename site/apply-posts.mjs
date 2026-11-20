@@ -72,6 +72,14 @@ must(
   "بلوک مطالب مرتبط",
 );
 
+/* صفحه‌ی تماس در نقشه‌ی سایت */
+must(
+  `    ...cats.map(`,
+  `    '<url><loc>' + url("contact/") + '</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>',
+    ...cats.map(`,
+  "صفحه‌ی تماس در sitemap",
+);
+
 /* صفحه‌ی ۴۰۴ و تماس با ما */
 function replaceFn(text, name, body) {
   const at = text.indexOf("function " + name + "(");
