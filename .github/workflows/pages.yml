@@ -37,8 +37,10 @@ jobs:
         run: node apply-layout.mjs
       - name: Apply post status, related posts, 404 and contact page
         run: node apply-posts.mjs
-      - name: Apply editor v2
+      - name: Apply editor v2 (status, schedule, guard)
         run: node apply-editor2.mjs
+      - name: Apply cover meta (og:image from featured image)
+        run: node apply-cover.mjs
       - name: Build static site
         run: node build.mjs
         env:
