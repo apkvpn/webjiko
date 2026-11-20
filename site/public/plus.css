@@ -1,12 +1,14 @@
 /* وب‌جیکو — لایه‌ی تجربه‌ی خواندن (بعد از theme.css بارگذاری می‌شود) */
 
-/* پیوند «تماس با ما» در هدر */
+/* پیوند «تماس با ما» در هدر: بدون کادر، انتهای سمت چپ کنار جستجو */
+.topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
 .top-link {
-  display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 12px;
-  background: #fff; border: 2px solid var(--line); color: var(--ink);
+  display: inline-flex; align-items: center; padding: 8px 10px; border-radius: 12px;
+  background: none; border: 0; color: var(--ink);
   font-weight: 700; font-size: 13.5px; text-decoration: none; white-space: nowrap;
 }
-.top-link:hover { border-color: var(--coral); color: var(--coral-dark); }
+.top-link:hover { color: var(--coral-dark); background: rgba(255, 111, 97, .1); }
 .icon-toggle {
   width: 36px; height: 36px; border-radius: 12px; border: 2px solid var(--line);
   background: #fff; cursor: pointer; font-size: 15px; line-height: 1; display: grid; place-items: center;
@@ -17,6 +19,22 @@
 .dock-pill { font-size: 0 !important; gap: 0 !important; padding: 5px 11px !important; line-height: 1; }
 .dock-pill .dock-dot { display: none; }
 .dock-pill::after { content: "."; font-size: 26px; line-height: .5; display: block; transform: translateY(-1px); }
+
+/* کانتنت در فوتر: فقط یک نقطه، بدون کادر */
+.footer .dock { position: static; padding: 0; margin: 0; align-items: flex-start; flex: 0 0 auto; }
+.footer .dock-pill {
+  border: 0 !important; background: none !important; box-shadow: none !important;
+  padding: 8px !important; border-radius: 50%; min-width: 0;
+}
+.footer .dock-pill::after {
+  content: "" !important; display: block; width: 12px; height: 12px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--coral), var(--grape)); transform: none; box-shadow: 0 0 0 4px rgba(255, 111, 97, .16);
+}
+.footer .dock-pill:hover::after { box-shadow: 0 0 0 6px rgba(255, 111, 97, .24); }
+.footer .dock-panel {
+  position: fixed; inset-inline: 10px; bottom: 10px; width: auto; max-width: 1000px;
+  margin: 0 auto; z-index: 90; max-height: 84vh;
+}
 
 /* دسته‌بندی‌ها در فوتر */
 .footer-inner { display: flex !important; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: space-between; }
@@ -62,11 +80,14 @@
 .related .section-head { margin-bottom: 12px; }
 .related .card-title { font-size: 15.5px; }
 
+/* جستجو و صفحه‌ی ۴۰۴ */
+.nf-search input, .search input { font-family: inherit; }
 .nf-search input {
   width: min(440px, 100%); padding: 11px 16px; border-radius: 14px;
   border: 2px solid var(--line); font-size: 15px; background: #fff; color: var(--ink);
 }
 .nf-search { margin: 10px 0 4px; }
+.search-note { font-size: 13px; color: var(--muted); margin: 0 0 12px; }
 
 /* بلوک نکته و هشدار */
 .callout {
@@ -120,7 +141,7 @@ html[data-theme="dark"] body { background: #141120; }
 html[data-theme="dark"] .topbar,
 html[data-theme="dark"] .card, html[data-theme="dark"] .post, html[data-theme="dark"] .archive,
 html[data-theme="dark"] .dock-panel, html[data-theme="dark"] .hero, html[data-theme="dark"] .search input,
-html[data-theme="dark"] .inp, html[data-theme="dark"] .top-link, html[data-theme="dark"] .read-tools,
+html[data-theme="dark"] .inp, html[data-theme="dark"] .read-tools,
 html[data-theme="dark"] .btn-ghost, html[data-theme="dark"] .chip, html[data-theme="dark"] .contact-card,
 html[data-theme="dark"] .share-btn, html[data-theme="dark"] .nf-search input, html[data-theme="dark"] .icon-toggle {
   background: #1e1932; color: var(--ink); border-color: #3a3252;
@@ -143,6 +164,10 @@ html[data-theme="dark"] .post-content a { color: #9ad4ff; }
 .toast.is-on { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 760px) {
+  .topbar-inner { flex-wrap: nowrap; gap: 8px; }
+  .top-actions { flex: 1 1 auto; justify-content: flex-end; gap: 6px; min-width: 0; }
+  .top-actions .search { width: auto; flex: 1 1 90px; min-width: 0; }
+  .top-actions .search input { width: 100%; }
   .read-tools { bottom: 12px; inset-inline-start: 10px; }
   .to-top { bottom: 12px; inset-inline-end: 10px; }
   .footer-cats { flex: 1 1 100%; order: 2; }
