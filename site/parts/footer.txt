@@ -1,4 +1,4 @@
-function footer() {
+function footer(withDock) {
   const items = cats
     .map((c) => `<a class="chip" href="${catHref(c.slug)}">${esc(c.name)} <b>${c.count}</b></a>`)
     .join("");
@@ -17,6 +17,7 @@ function footer() {
         <p>ساخته‌شده با ❤️ برای بچه‌های کنجکاو</p>
         <p class="copyright">© ${new Date().getFullYear()} وب‌جیکو</p>
       </div>
+      ${dock()}
     </div>
   </footer>`;
 }
