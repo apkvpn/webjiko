@@ -3,12 +3,11 @@ function header() {
     <div class="wrap topbar-inner">
       <a class="brand" href="${BASE}"><span class="brand-mark">و</span><span class="brand-text">وب‌جیکو</span></a>
       <div class="top-actions">
-        <a class="top-link" href="${BASE}contact/">تماس با ما</a>
         <div class="search">
           <input id="searchInput" type="search" placeholder="جستجو…" aria-label="جستجو" />
           <span class="search-ico">🔍</span>
         </div>
-        ${dock()}
+        <a class="top-link" href="${BASE}contact/">تماس با ما</a>
       </div>
     </div>
   </header>`;
