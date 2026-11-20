@@ -1,0 +1,12 @@
+function relatedBlock(post) {
+  const same = posts.filter((p) => p.slug !== post.slug && p.category === post.category).slice(0, 3);
+  const extra = posts
+    .filter((p) => p.slug !== post.slug && p.category !== post.category)
+    .slice(0, Math.max(0, 3 - same.length));
+  const list = same.concat(extra);
+  if (!list.length) return "";
+  return `<section class="related" aria-labelledby="relatedTitle">
+    <div class="section-head"><h2 id="relatedTitle">مطالب مرتبط</h2></div>
+    <div class="grid">${list.map(postCard).join("")}</div>
+  </section>`;
+}
