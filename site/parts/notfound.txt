@@ -1,0 +1,24 @@
+function notFoundPage() {
+  const picks = posts.slice(0, 6);
+  return layout({
+    title: `صفحه پیدا نشد | ${SITE_NAME}`,
+    description: "این صفحه در وب‌جیکو وجود ندارد. از جستجو یا آخرین نوشته‌ها استفاده کن.",
+    canonical: url("404.html"),
+    activeCat: "",
+    body: `<section class="hero hero-small">
+        <div class="hero-inner">
+          <h1>۴۰۴</h1>
+          <p class="hero-sub">این صفحه پیدا نشد — شاید یکی از این‌ها را می‌خواستی:</p>
+          <p class="nf-search">
+            <input id="searchInput" type="search" placeholder="جستجو در همه‌ی نوشته‌ها…" aria-label="جستجو" />
+          </p>
+          <p><a class="btn btn-primary" href="${BASE}">برگشت به خانه</a></p>
+        </div>
+      </section>
+      <section class="section">
+        <div class="grid" id="postsGrid">${picks.map(postCard).join("")}</div>
+        <p class="empty" id="noResult" hidden>چیزی پیدا نشد. یک کلمه‌ی دیگر امتحان کن 🔎</p>
+      </section>`,
+    jsonld: { "@context": "https://schema.org", "@type": "WebPage", name: "صفحه پیدا نشد" },
+  });
+}
