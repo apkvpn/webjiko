@@ -239,10 +239,14 @@
     e.preventDefault();
     var value = String(tokenInput.value || "").trim();
     if (!value) { setMsg(tokenMsg, "توکن را وارد کن.", "error"); return; }
+    if (!/^(gh[pousr]_|github_pat_)/.test(value)) {
+      setMsg(tokenMsg, "این شبیه توکن گیت‌هاب نیست. توکن باید با ghp_ یا github_pat_ شروع شود و کامل کپی شود.", "error");
+      return;
+    }
     setMsg(tokenMsg, "در حال بررسی…");
     var previous = token();
     try { localStorage.setItem(TOKEN_KEY, value); } catch (err) {}
-    ghRead().then(function (data) {
+    checkToken(value).then(function () { return ghRead(value); }).then(function (data) {
       postsCache = data.posts;
       tokenInput.value = "";
       setMsg(tokenMsg, "");
@@ -255,6 +259,22 @@
       setMsg(tokenMsg, err.message || "توکن کار نکرد.", "error");
     });
   });
+
+  /* راهنمای ساخت توکن، بدون نیاز به دست‌زدن به HTML */
+  if (tokenForm && !$("#tokenHelp")) {
+    var tokenHelp = document.createElement("details");
+    tokenHelp.id = "tokenHelp";
+    tokenHelp.style.cssText = "margin-top:12px;font-size:13px;line-height:1.9;color:var(--muted)";
+    tokenHelp.innerHTML = '<summary style="cursor:pointer;font-weight:700">توکن را از کجا بیاورم؟</summary>' +
+      '<ol style="margin:8px 0 6px;padding-inline-start:20px">' +
+      '<li>گیت‌هاب → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token.</li>' +
+      '<li><b>Repository access</b> را روی Only select repositories بگذار و مخزن <b>webjiko</b> را انتخاب کن.</li>' +
+      '<li>در <b>Permissions → Contents</b> گزینه‌ی <b>Read and write</b> را انتخاب کن (همین یکی کافی است).</li>' +
+      '<li>توکن ساخته‌شده (که با <code style="direction:ltr;display:inline-block">github_pat_</code> شروع می‌شود) را همین‌جا بچسبان.</li>' +
+      '</ol><p style="margin:6px 0 0"><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">ساخت توکن تازه در گیت‌هاب ↗</a>' +
+      ' — اگر توکن قبلی منقضی شده یا اجازه‌ی نوشتن ندارد، یکی تازه با همین مراحل بساز.</p>';
+    tokenForm.appendChild(tokenHelp);
+  }
 
   logoutBtn.addEventListener("click", function () {
     try { localStorage.removeItem(ADMIN_KEY); } catch (e) {}
@@ -275,19 +295,54 @@
     for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return new TextDecoder().decode(bytes);
   }
-  function ghFetch(path, opts) {
+  function ghFetch(path, opts, tkOverride) {
     var headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
-    var tk = token();
+    var tk = tkOverride == null ? token() : tkOverride;
     if (tk) headers.Authorization = "Bearer " + tk;
     var init = { headers: headers, cache: "no-store" };
     if (opts) for (var k in opts) init[k] = opts[k];
     return fetch("https://api.github.com/repos/" + REPO + path, init);
   }
-  function ghRead() {
-    return ghFetch("/contents/" + DATA_PATH + "?ref=" + encodeURIComponent(BRANCH)).then(function (r) {
-      if (r.status === 401 || r.status === 403) throw new Error("توکن گیت‌هاب نامعتبر است یا اجازه‌ی نوشتن ندارد.");
-      if (r.status === 404) throw new Error("فایل پست‌ها روی گیت‌هاب پیدا نشد.");
-      if (!r.ok) throw new Error("خطای گیت‌هاب: " + r.status);
+  function ghBody(r) {
+    return r.json().then(function (body) { return (body && body.message) || ""; }).catch(function () { return ""; });
+  }
+  /* پیام فارسی دقیق برای خطاهای 401/403/404 گیت‌هاب */
+  function ghAccessError(r, raw, action) {
+    var low = String(raw || "").toLowerCase();
+    if (r.status === 401) {
+      return new Error("توکن گیت‌هاب نامعتبر یا منقضی شده است. یک توکن تازه بساز و دوباره وارد کن.");
+    }
+    if (r.status === 403) {
+      if (/rate limit|abuse|secondary/i.test(low)) {
+        return new Error("گیت‌هاب موقتاً تعداد درخواست‌ها را محدود کرده. یک دقیقه صبر کن و دوباره تلاش کن.");
+      }
+      return new Error("توکن اجازه‌ی " + action + " روی مخزن " + REPO + " را ندارد. در تنظیمات توکن، Permissions → Contents را روی Read and write بگذار.");
+    }
+    return new Error("توکن به مسیرهای مخزن " + REPO + " دسترسی ندارد (خطای 404). در تنظیمات توکن، Repository access را روی Only select repositories → webjiko بگذار و Contents را Read and write کن.");
+  }
+  /* بررسی توکنی که کاربر همین حالا وارد کرده: معتبر است؟ اجازه‌ی نوشتن دارد؟ */
+  function checkToken(tk) {
+    return ghFetch("", null, tk).then(function (r) {
+      if (r.status === 401) return ghBody(r).then(function (m) { throw ghAccessError(r, m, "خواندن"); });
+      if (r.status === 403 || r.status === 404) return ghBody(r).then(function (m) { throw ghAccessError(r, m, "خواندن"); });
+      if (!r.ok) return ghBody(r).then(function (m) { throw new Error("گیت‌هاب این توکن را قبول نکرد (خطای " + r.status + (m ? " — " + m : "") + ")."); });
+      return r.json().then(function (repo) {
+        var perms = (repo && repo.permissions) || null;
+        if (perms && perms.push !== true) {
+          throw new Error("این توکن فقط اجازه‌ی خواندن دارد و نمی‌تواند پست منتشر کند. در تنظیمات توکن، Permissions → Contents را روی Read and write بگذار.");
+        }
+        return true;
+      });
+    });
+  }
+  function ghRead(tk) {
+    return ghFetch("/contents/" + DATA_PATH + "?ref=" + encodeURIComponent(BRANCH), null, tk).then(function (r) {
+      if (!r.ok) {
+        return ghBody(r).then(function (m) {
+          if (r.status === 401 || r.status === 403 || r.status === 404) throw ghAccessError(r, m, "خواندن");
+          throw new Error("خطای گیت‌هاب: " + r.status + (m ? " — " + m : ""));
+        });
+      }
       return r.json().then(function (f) {
         var list = [];
         try { list = JSON.parse(fromB64(f.content)); } catch (e) { list = []; }
@@ -300,9 +355,13 @@
       method: "PUT",
       body: JSON.stringify({ message: message, content: toB64(JSON.stringify(list, null, 2)), sha: sha, branch: BRANCH }),
     }).then(function (r) {
-      if (r.status === 401 || r.status === 403) throw new Error("توکن اجازه‌ی انتشار ندارد.");
       if (r.status === 409) throw new Error("همین لحظه یک تغییر دیگر ثبت شد؛ یک‌بار دیگر تلاش کن.");
-      if (!r.ok) throw new Error("انتشار انجام نشد (خطای " + r.status + ").");
+      if (!r.ok) {
+        return ghBody(r).then(function (m) {
+          if (r.status === 401 || r.status === 403 || r.status === 404) throw ghAccessError(r, m, "نوشتن");
+          throw new Error("انتشار انجام نشد (خطای " + r.status + (m ? " — " + m : "") + ").");
+        });
+      }
       return r.json();
     });
   }
@@ -494,7 +553,12 @@
       saveBtn.disabled = false;
       saveBtn.textContent = label;
       setMsg(editorMsg, err.message || "انتشار انجام نشد.", "error");
-      if (err && /توکن/.test(err.message || "")) { tokenForm.hidden = false; editorApp.hidden = true; }
+      if (err && /توکن/.test(err.message || "")) {
+        try { localStorage.removeItem(TOKEN_KEY); } catch (e3) {}
+        tokenForm.hidden = false;
+        editorApp.hidden = true;
+        setMsg(tokenMsg, err.message, "error");
+      }
     });
   }
   saveBtn.addEventListener("click", save);
