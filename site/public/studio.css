@@ -59,3 +59,15 @@
   .st-row { grid-template-columns: 1fr; }
   .wj-box { padding: 14px 14px 18px; }
 }
+
+/* --------------------- تصویر شاخص: انتخاب از دستگاه --------------------- */
+.cover-pick { display: grid; gap: 8px; }
+.cover-pick .cover-thumb {
+  width: 100%; aspect-ratio: 1200 / 630; object-fit: cover; border-radius: 14px;
+  border: 2px solid var(--line); background: #fff2ea; display: block;
+}
+.cover-pick .cover-thumb[hidden] { display: none; }
+.cover-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.cover-actions .btn { font-size: 12.5px; padding: 7px 12px; }
+.cover-note { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.9; }
+.cover-pick.has-cover .cover-note { color: #2f8f6b; }
