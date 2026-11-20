@@ -1,0 +1,6 @@
+{
+  "name": "webjiko | دنیای شاد دانش و داستان برای بچه‌های ۸ تا ۱۰ ساله",
+  "description": "وب‌جیکو (webjiko) پلتفرم فارسی و رنگارنگ داستان‌ها، علوم شگفت‌انگیز، معماهای فکری و آموزش‌های خلاقانه برای کودکان ۸ تا ۱۰ ساله.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

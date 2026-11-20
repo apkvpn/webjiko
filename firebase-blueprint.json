@@ -1,0 +1,221 @@
+{
+  "entities": {
+    "Category": {
+      "title": "Category",
+      "description": "Topic category for webjiko articles aimed at ages 8 to 10.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique category identifier."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Persian display name of the category."
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-z0-9\\-]+$",
+          "description": "URL-safe slug for category routes."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Short SEO description for the category."
+        },
+        "colorTheme": {
+          "type": "string",
+          "enum": ["coral", "sky", "mint", "marigold", "violet"],
+          "description": "Kid-friendly color accent palette key."
+        },
+        "illustration": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Illustration preset identifier."
+        },
+        "order": {
+          "type": "number",
+          "description": "Display sort order."
+        },
+        "authorUid": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Admin UID that created the category."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "slug",
+        "description",
+        "colorTheme",
+        "illustration",
+        "order",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Educational or entertaining Persian article published on webjiko.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique post identifier."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 140,
+          "description": "Article headline."
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140,
+          "pattern": "^[a-z0-9\\-]+$",
+          "description": "SEO-friendly URL slug."
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 320,
+          "description": "Meta description and summary excerpt."
+        },
+        "contentHtml": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 200000,
+          "description": "Rich formatted HTML body content."
+        },
+        "categoryId": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Referenced category document ID."
+        },
+        "categoryName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Denormalized Persian category display name."
+        },
+        "coverImage": {
+          "type": "string",
+          "maxLength": 300000,
+          "description": "Illustration key, URL, or compressed cover data URL."
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Up to 10 SEO keyword tags."
+        },
+        "ageGroup": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Target reading age label."
+        },
+        "readingMinutes": {
+          "type": "number",
+          "description": "Estimated reading time in minutes."
+        },
+        "published": {
+          "type": "boolean",
+          "description": "Whether the article is publicly visible and indexable."
+        },
+        "authorName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Display name of the author."
+        },
+        "authorUid": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Admin UID of the post author."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug",
+        "summary",
+        "contentHtml",
+        "categoryId",
+        "categoryName",
+        "coverImage",
+        "keywords",
+        "ageGroup",
+        "readingMinutes",
+        "published",
+        "authorName",
+        "authorUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized admin record keyed by Firebase Auth UID.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Publicly readable categories managed exclusively by verified admins."
+    },
+    "/posts/{postId}": {
+      "schema": { "$ref": "#/entities/Post" },
+      "description": "Published posts are publicly readable and SEO-indexable; drafts and all writes require verified admin."
+    },
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Admin allowlist records readable only by the matching authenticated user."
+    }
+  }
+}

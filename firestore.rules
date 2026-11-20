@@ -1,0 +1,151 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidSlug(slug) {
+      return slug is string && slug.size() >= 1 && slug.size() <= 140 && slug.matches('^[a-z0-9\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && (
+        request.auth.token.email == 'roomfa.ir67@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidCategory(data, categoryId) {
+      return data.keys().hasAll([
+          'id', 'name', 'slug', 'description', 'colorTheme',
+          'illustration', 'order', 'authorUid', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'name', 'slug', 'description', 'colorTheme',
+          'illustration', 'order', 'authorUid', 'createdAt', 'updatedAt'
+        ])
+        && data.id is string && data.id == categoryId && isValidId(data.id) && data.id.size() <= 64
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 60
+        && isValidSlug(data.slug) && data.slug.size() <= 80
+        && data.description is string && data.description.size() <= 300
+        && data.colorTheme in ['coral', 'sky', 'mint', 'marigold', 'violet']
+        && data.illustration is string && data.illustration.size() >= 1 && data.illustration.size() <= 60
+        && data.order is number && data.order >= 0 && data.order <= 10000
+        && data.authorUid is string && data.authorUid.size() >= 1 && data.authorUid.size() <= 128
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidPost(data, postId) {
+      return data.keys().hasAll([
+          'id', 'title', 'slug', 'summary', 'contentHtml',
+          'categoryId', 'categoryName', 'coverImage', 'keywords',
+          'ageGroup', 'readingMinutes', 'published', 'authorName',
+          'authorUid', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'title', 'slug', 'summary', 'contentHtml',
+          'categoryId', 'categoryName', 'coverImage', 'keywords',
+          'ageGroup', 'readingMinutes', 'published', 'authorName',
+          'authorUid', 'createdAt', 'updatedAt'
+        ])
+        && data.id is string && data.id == postId && isValidId(data.id) && data.id.size() <= 80
+        && data.title is string && data.title.size() >= 2 && data.title.size() <= 140
+        && isValidSlug(data.slug)
+        && data.summary is string && data.summary.size() >= 2 && data.summary.size() <= 320
+        && data.contentHtml is string && data.contentHtml.size() >= 2 && data.contentHtml.size() <= 200000
+        && data.categoryId is string && isValidId(data.categoryId) && data.categoryId.size() <= 64
+        && data.categoryName is string && data.categoryName.size() >= 1 && data.categoryName.size() <= 60
+        && data.coverImage is string && data.coverImage.size() <= 300000
+        && data.keywords is list && data.keywords.size() <= 10
+        && (data.keywords.size() == 0 || (data.keywords[0] is string && data.keywords[0].size() <= 40))
+        && data.ageGroup is string && data.ageGroup.size() >= 1 && data.ageGroup.size() <= 40
+        && data.readingMinutes is number && data.readingMinutes >= 1 && data.readingMinutes <= 120
+        && data.published is bool
+        && data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 60
+        && data.authorUid is string && data.authorUid.size() >= 1 && data.authorUid.size() <= 128
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    match /categories/{categoryId} {
+      allow get: if isValidId(categoryId);
+      allow list: if true;
+
+      allow create: if isAdmin()
+        && isValidId(categoryId)
+        && isValidCategory(incoming(), categoryId)
+        && incoming().authorUid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isAdmin()
+        && isValidId(categoryId)
+        && isValidCategory(incoming(), categoryId)
+        && incoming().authorUid == existing().authorUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'name', 'slug', 'description', 'colorTheme',
+          'illustration', 'order', 'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(categoryId);
+    }
+
+    match /posts/{postId} {
+      allow get: if isValidId(postId) && (resource.data.published == true || isAdmin());
+      allow list: if resource.data.published == true || isAdmin();
+
+      allow create: if isAdmin()
+        && isValidId(postId)
+        && isValidPost(incoming(), postId)
+        && incoming().authorUid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && exists(/databases/$(database)/documents/categories/$(incoming().categoryId));
+
+      allow update: if isAdmin()
+        && isValidId(postId)
+        && isValidPost(incoming(), postId)
+        && incoming().authorUid == existing().authorUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && exists(/databases/$(database)/documents/categories/$(incoming().categoryId))
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'slug', 'summary', 'contentHtml',
+          'categoryId', 'categoryName', 'coverImage', 'keywords',
+          'ageGroup', 'readingMinutes', 'published', 'authorName', 'updatedAt'
+        ]);
+
+      allow delete: if isAdmin() && isValidId(postId);
+    }
+
+    match /admins/{uid} {
+      allow get: if isSignedIn() && isValidId(uid) && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+  }
+}
