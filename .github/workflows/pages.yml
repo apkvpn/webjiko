@@ -33,6 +33,12 @@ jobs:
         run: node apply-slug.mjs
       - name: Apply manual link field and panel minimize
         run: node apply-editor.mjs
+      - name: Apply new layout and assets
+        run: node apply-layout.mjs
+      - name: Apply post status, related posts, 404 and contact page
+        run: node apply-posts.mjs
+      - name: Apply editor v2
+        run: node apply-editor2.mjs
       - name: Build static site
         run: node build.mjs
         env:
