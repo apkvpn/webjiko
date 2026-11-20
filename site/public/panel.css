@@ -1,0 +1,11 @@
+/* وب‌جیکو — فیلد لینک انگلیسی و جمع‌کردن پنل کانتنت (بعد از theme.css) */
+/* فیلد لینک انگلیسی ادیتور */
+.inp-slug { width: 100%; box-sizing: border-box; direction: ltr; text-align: left; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; border: 2px dashed #e6d3ff; }
+.inp-slug::placeholder { direction: rtl; text-align: right; font-family: inherit; font-size: 13px; }
+.slug-tip { margin: 0 4px 6px; min-height: 16px; font-size: 11.5px; color: var(--muted); word-break: break-all; }
+
+/* جمع‌کردن (مینیمایز) پنل کانتنت */
+.dock-panel.is-min { max-height: none; overflow: hidden; padding-bottom: 12px; }
+.dock-panel.is-min > *:not(.dock-head) { display: none !important; }
+.dock-panel.is-min .dock-head { border-bottom: 0; padding-bottom: 0; cursor: pointer; }
+.dock-panel.is-min .dock-head:hover strong { color: var(--coral); }
