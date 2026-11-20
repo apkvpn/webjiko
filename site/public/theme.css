@@ -1,0 +1,108 @@
+/* وب‌جیکو — لایه‌ی چینش جمع‌وجور و رنگ‌های شادتر (بعد از styles.css بارگذاری می‌شود) */
+:root {
+  --cream: #fff8f1;
+  --ink: #2b2440;
+  --muted: #6b6383;
+  --coral: #ff5f6d;
+  --coral-dark: #e0424f;
+  --sun: #ffd93d;
+  --mint: #1fd3c0;
+  --sky: #46a8ff;
+  --grape: #a06bff;
+  --line: #ffe6d3;
+  --shadow: 0 10px 26px rgba(70, 45, 96, 0.09);
+  --shadow-sm: 0 4px 12px rgba(70, 45, 96, 0.07);
+  --radius: 20px;
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+body { font-size: 16px; line-height: 1.8; }
+.wrap { width: min(1040px, calc(100% - 24px)); }
+
+/* هدر */
+.topbar-inner { gap: 12px; padding: 8px 0; }
+.brand { gap: 8px; font-size: 20px; }
+.brand-mark { width: 32px; height: 32px; border-radius: 11px; font-size: 17px; box-shadow: 0 4px 0 #d9c9f7; }
+.chip { padding: 6px 12px; font-size: 13.5px; }
+.chip:hover { border-color: #ffd0c9; }
+.chip.is-active { background: linear-gradient(135deg, var(--coral), var(--grape)); border-color: transparent; box-shadow: 0 3px 0 #d8c6ff; }
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.search input { width: 180px; padding: 8px 34px 8px 12px; font-size: 13.5px; }
+
+/* دکمه‌ی کانتنت (ادیتور) در هدر */
+.dock { position: static; padding: 0; }
+.dock-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 15px; border-radius: 12px; border: 0;
+  background: linear-gradient(135deg, var(--grape), var(--coral));
+  color: #fff; font-family: inherit; font-size: 13.5px; font-weight: 700;
+  cursor: pointer; transition: 0.16s; white-space: nowrap;
+  box-shadow: 0 3px 0 #cdb6ff;
+}
+.dock-pill:hover { transform: translateY(-1px); box-shadow: 0 4px 0 #cdb6ff; }
+.dock[data-state="open"] .dock-pill { display: inline-flex; background: var(--ink); box-shadow: 0 3px 0 #b6abd6; }
+.dock-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
+.dock-panel {
+  position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); z-index: 80;
+  width: min(940px, calc(100vw - 20px)); max-height: min(78vh, 720px); overflow-y: auto;
+  background: #fff; color: var(--ink); border: 2px solid #ffe3d1; border-radius: var(--radius);
+  box-shadow: 0 24px 50px rgba(20, 10, 40, 0.22); padding: 14px 16px 18px; overscroll-behavior: contain;
+}
+
+/* سربرگ کوچک صفحه‌های داخلی (دسته‌بندی و ۴۰۴) */
+.hero { margin: 16px 0 20px; padding: 16px 20px; border-radius: var(--radius); background: linear-gradient(135deg, #fff3d9, #ffe4e6 55%, #ece2ff); box-shadow: var(--shadow-sm); border: 2px solid #ffe0c9; }
+.hero-small { padding: 18px 20px; }
+.hero-eyebrow { display: none; }
+.hero h1 { margin: 0; font-size: clamp(22px, 3.4vw, 30px); line-height: 1.5; letter-spacing: -0.5px; }
+.hero-sub { margin: 3px 0 0; font-size: 14px; font-weight: 400; color: #5d5378; }
+.hero-text { display: none; }
+.hero-blob { display: none; }
+
+/* بخش‌ها و کارت‌ها */
+.section { margin: 0 0 26px; }
+.section-first { margin-top: 16px; }
+.section-head { align-items: center; gap: 10px; margin-bottom: 12px; }
+.section-head h2 { font-size: 21px; letter-spacing: -0.4px; display: flex; align-items: center; gap: 9px; }
+.section-head h2::before { content: ""; width: 7px; height: 21px; border-radius: 4px; background: linear-gradient(180deg, var(--coral), var(--sun)); }
+.section-head p { font-size: 13px; }
+.grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.card { border: 2px solid #ffe0d5; box-shadow: var(--shadow-sm); transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(70, 45, 96, 0.13); border-color: var(--coral); }
+.card-cover-fallback { font-size: 36px; }
+.card-body { padding: 12px 14px 14px; }
+.card-title { margin-bottom: 4px; font-size: 17px; }
+.card-excerpt { margin-bottom: 10px; font-size: 13.5px; }
+.card-meta { gap: 7px; font-size: 12px; }
+.badge { top: 10px; right: 10px; padding: 4px 11px; }
+
+/* فهرست همه‌ی پست‌ها */
+.archive { border: 2px solid #ffe0d5; box-shadow: var(--shadow-sm); }
+.archive a { padding: 10px 16px; font-size: 14.5px; }
+.archive a:hover { background: #fff5ec; }
+.empty { border: 2px dashed var(--line); padding: 18px; }
+
+/* صفحه‌ی پست */
+.post { border: 2px solid #ffe0d5; border-radius: 24px; padding: clamp(18px, 3vw, 34px); margin: 18px 0 28px; box-shadow: var(--shadow-sm); }
+.post-title { margin: 4px 0 8px; font-size: clamp(23px, 3.8vw, 32px); line-height: 1.5; }
+.post-content { font-size: 17px; line-height: 2; }
+.post-cover { border-radius: 18px; margin-bottom: 18px; }
+
+/* فوتر */
+.footer { margin-top: 32px; padding: 26px 0 0; border-radius: 26px 26px 0 0; }
+.footer-inner { gap: 22px; padding-bottom: 22px; }
+
+/* ادیتور */
+.editor-area { min-height: 200px; }
+
+@media (max-width: 760px) {
+  body { font-size: 15.5px; }
+  .topbar-inner { gap: 8px; }
+  .top-actions { margin-inline-start: auto; }
+  .search input { width: 120px; }
+  .topnav { flex: 1 1 100%; order: 3; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .dock-panel { max-height: 82vh; padding: 12px 12px 16px; }
+  .dock-pill { padding: 8px 12px; font-size: 12.5px; }
+  .editor-area { min-height: 170px; }
+}
