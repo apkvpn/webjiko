@@ -1,0 +1,31 @@
+function contactPage() {
+  const newIssue = (title) => `https://github.com/apkvpn/webjiko/issues/new?title=${encodeURIComponent(title)}`;
+  return layout({
+    title: `تماس با ما | ${SITE_NAME}`,
+    description: "تماس با وب‌جیکو: پیشنهاد مطلب، گزارش لینک خراب و درخواست همکاری.",
+    canonical: url("contact/"),
+    activeCat: "",
+    body: `<article class="post contact-page">
+      <h1 class="post-title">تماس با ما</h1>
+      <p class="post-lead">سؤال، پیشنهاد یا لینک خرابی دیدی؟ از راه‌های زیر خبر بده — همه‌شان مستقیم به دست ما می‌رسد.</p>
+      <div class="contact-cards">
+        <a class="contact-card" href="${newIssue("گزارش لینک خراب")}" target="_blank" rel="noopener">
+          <b>گزارش لینک خراب</b><span>اگر لینک دانلود یا صفحه‌ای کار نمی‌کند، آدرسش را بفرست.</span>
+        </a>
+        <a class="contact-card" href="${newIssue("پیشنهاد مطلب")}" target="_blank" rel="noopener">
+          <b>پیشنهاد مطلب</b><span>درباره‌ی چه چیزی بنویسیم؟ موضوع را بگو.</span>
+        </a>
+        <a class="contact-card" href="${newIssue("درخواست همکاری")}" target="_blank" rel="noopener">
+          <b>همکاری و تبلیغات</b><span>پیشنهاد همکاری، معرفی محصول یا تبلیغ.</span>
+        </a>
+      </div>
+      <p class="contact-note">پاسخ‌ها معمولاً در همان صفحه‌ی گفت‌وگو داده می‌شود. برای دیدن همه‌ی نوشته‌ها <a href="${BASE}">به صفحه‌ی اصلی</a> برگرد.</p>
+    </article>`,
+    jsonld: {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      name: "تماس با ما",
+      url: url("contact/"),
+    },
+  });
+}
