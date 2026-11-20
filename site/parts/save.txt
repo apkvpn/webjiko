@@ -1,0 +1,107 @@
+  function save() {
+    if (!state.loggedIn) return;
+    var title = String(titleIn.value || "").trim();
+    if (!title) { setMsg(editorMsg, "عنوان پست را بنویس.", "error"); titleIn.focus(); return; }
+    var content = String(area.innerHTML || "").trim();
+    if (!content) { setMsg(editorMsg, "متن پست خالی است.", "error"); area.focus(); return; }
+
+    var statusIn = $("#postStatus");
+    var whenIn = $("#postPublishAt");
+    var status = String((statusIn && statusIn.value) || "published");
+    var publish_at = "";
+    if (status === "scheduled") {
+      var raw = String((whenIn && whenIn.value) || "").trim();
+      var when = raw ? new Date(raw) : null;
+      if (!when || isNaN(when.getTime())) {
+        setMsg(editorMsg, "برای انتشار زمان‌بندی‌شده، تاریخ و ساعت را هم انتخاب کن.", "error");
+        if (whenIn) whenIn.focus();
+        return;
+      }
+      publish_at = when.toISOString();
+    }
+
+    var isEdit = !!state.editingId;
+    var label = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = "در حال انتشار…";
+    setMsg(editorMsg, "در حال ثبت روی گیت‌هاب…");
+
+    ghRead().then(function (data) {
+      var list = data.posts || [];
+      var now = new Date().toISOString();
+      var payload = {
+        title: title,
+        category: String(catIn.value || "").trim() || "عمومی",
+        excerpt: String(excerptIn.value || "").trim().slice(0, 400),
+        cover: /^https?:\/\//i.test(String(coverIn.value || "").trim()) ? String(coverIn.value).trim() : "",
+        content: content,
+        status: status,
+        publish_at: publish_at,
+      };
+      var message;
+      if (isEdit) {
+        var existing = null;
+        for (var i = 0; i < list.length; i++) if (Number(list[i].id) === Number(state.editingId)) existing = list[i];
+        if (!existing) throw new Error("پست برای ویرایش پیدا نشد؛ صفحه را دوباره باز کن.");
+        existing.title = payload.title;
+        existing.category = payload.category;
+        existing.excerpt = payload.excerpt;
+        existing.cover = payload.cover;
+        existing.content = payload.content;
+        existing.status = payload.status;
+        existing.publish_at = payload.publish_at;
+        var wanted = slugify(String((slugIn && slugIn.value) || "").trim() || existing.slug || existing.title);
+        if (wanted !== existing.slug) {
+          var used = {}, k = 1;
+          list.forEach(function (p) { if (Number(p.id) !== Number(existing.id)) used[p.slug] = 1; });
+          var next = wanted;
+          while (used[next]) { k += 1; next = wanted + "-" + k; }
+          existing.slug = next;
+        }
+        existing.updated_at = now;
+        message = "edit post: " + payload.title;
+      } else {
+        var maxId = 0;
+        list.forEach(function (p) { if (Number(p.id) > maxId) maxId = Number(p.id); });
+        var manualSlug = String((slugIn && slugIn.value) || "").trim();
+        var base = slugify(manualSlug || payload.title);
+        var slug = base, n = 1, taken = {};
+        list.forEach(function (p) { taken[p.slug] = 1; });
+        while (taken[slug]) { n += 1; slug = base + "-" + n; }
+        list.push({
+          id: maxId + 1,
+          slug: slug,
+          title: payload.title,
+          category: payload.category,
+          excerpt: payload.excerpt,
+          cover: payload.cover,
+          content: payload.content,
+          status: payload.status,
+          publish_at: payload.publish_at,
+          created_at: now,
+          updated_at: now,
+        });
+        message = (status === "published" ? "new post: " : "draft: ") + payload.title;
+      }
+      return ghWrite(list, data.sha, message).then(function () { return list; });
+    }).then(function (list) {
+      postsCache = list;
+      saveBtn.disabled = false;
+      saveBtn.textContent = isEdit ? "ذخیره‌ی تغییرات" : "انتشار پست";
+      var what = status === "draft" ? "پیش‌نویس ذخیره شد 📝" : status === "scheduled" ? "زمان‌بندی ثبت شد ⏰" : isEdit ? "تغییرات ثبت شد ✅" : "پست منتشر شد 🎉";
+      setMsg(editorMsg, what + " سایت تا حدود یک دقیقه دیگر به‌روز می‌شود.", "ok");
+      try { localStorage.removeItem("wj_draft_" + (isEdit ? state.editingId : "new")); } catch (e4) {}
+      resetForm();
+      refreshHome();
+    }).catch(function (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = label;
+      setMsg(editorMsg, err.message || "انتشار انجام نشد.", "error");
+      if (err && /توکن/.test(err.message || "")) {
+        try { localStorage.removeItem(TOKEN_KEY); } catch (e3) {}
+        tokenForm.hidden = false;
+        editorApp.hidden = true;
+        setMsg(tokenMsg, err.message, "error");
+      }
+    });
+  }
