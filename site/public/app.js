@@ -1,5 +1,5 @@
 /* وب‌جیکو — client for the static site: search, hidden admin dock, rich editor.
- * Publishing works by committing site/content/posts.json to the GitHub repo that hosts the site;
+ * Publishing works by committing content/posts.json to the GitHub repo that hosts the site;
  * GitHub Pages then rebuilds the page automatically. */
 (function () {
   "use strict";
@@ -211,12 +211,19 @@
   }
 
   /* -------------------------------- login -------------------------------- */
+  /* کیبورد فارسی عددها را ۱۲۱۳ می‌نویسد؛ هر دو شکل را یکی می‌کنیم. */
+  function normalizePass(value) {
+    return String(value == null ? "" : value)
+      .replace(/[\u06F0-\u06F9]/g, function (d) { return String(d.charCodeAt(0) - 0x06f0); })
+      .replace(/[\u0660-\u0669]/g, function (d) { return String(d.charCodeAt(0) - 0x0660); })
+      .replace(/[\u200c\u200d\u200e\u200f\u00a0\s]/g, "");
+  }
   loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    var password = String(passInput.value || "").trim();
+    var password = normalizePass(passInput.value);
     if (!password) { setMsg(loginMsg, "رمز را وارد کن.", "error"); return; }
     if (password !== PASS) {
-      setMsg(loginMsg, "رمز اشتباه است.", "error");
+      setMsg(loginMsg, "رمز اشتباه است. عددها را با کیبورد انگلیسی یا فارسی وارد کن.", "error");
       passInput.select();
       return;
     }
