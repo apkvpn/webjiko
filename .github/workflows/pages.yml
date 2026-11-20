@@ -41,6 +41,8 @@ jobs:
         run: node apply-editor2.mjs
       - name: Apply cover meta (og:image from featured image)
         run: node apply-cover.mjs
+      - name: Apply featured image picker
+        run: node apply-coverpick.mjs
       - name: Build static site
         run: node build.mjs
         env:
