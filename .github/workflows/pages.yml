@@ -27,6 +27,8 @@ jobs:
           node-version: 20
       - name: Social preview image
         run: convert -background none -density 96 public/og.svg -resize 1200x630 public/og.jpg || true
+      - name: Apply compact theme
+        run: node apply-theme.mjs
       - name: Build static site
         run: node build.mjs
         env:
