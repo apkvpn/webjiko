@@ -1,0 +1,22 @@
+function footer() {
+  const items = cats
+    .map((c) => `<a class="chip" href="${catHref(c.slug)}">${esc(c.name)} <b>${c.count}</b></a>`)
+    .join("");
+  return `<footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <a class="brand brand-light" href="${BASE}"><span class="brand-mark">و</span><span class="brand-text">وب‌جیکو</span></a>
+        <p>${esc(SITE_TAGLINE)}</p>
+        <p class="footer-links"><a href="${BASE}sitemap.xml">نقشه‌ی سایت</a><a href="${BASE}rss.xml">خوراک RSS</a><a href="${BASE}contact/">تماس با ما</a></p>
+      </div>
+      <nav class="footer-cats" aria-label="دسته‌بندی‌ها">
+        <strong>دسته‌بندی‌ها</strong>
+        <div class="footer-chips">${items || '<span class="chip">به‌زودی</span>'}</div>
+      </nav>
+      <div class="footer-note">
+        <p>ساخته‌شده با ❤️ برای بچه‌های کنجکاو</p>
+        <p class="copyright">© ${new Date().getFullYear()} وب‌جیکو</p>
+      </div>
+    </div>
+  </footer>`;
+}
