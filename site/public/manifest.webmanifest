@@ -1,0 +1,21 @@
+{
+  "name": "وب‌جیکو — نوشته‌های باحال برای بچه‌های باهوش",
+  "short_name": "وب‌جیکو",
+  "description": "مجلهٔ فارسی نوشته‌های کوتاه، آموزشی و سرگرم‌کننده برای بچه‌های کنجکاو.",
+  "lang": "fa-IR",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff8f1",
+  "theme_color": "#ff6f61",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
