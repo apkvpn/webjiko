@@ -1,0 +1,351 @@
+/* وب‌جیکو — لایهٔ «۱۰۰ قابلیت تازه» (بعد از plus.css بارگذاری می‌شود) */
+.wjf-skip {
+  position: fixed; inset-inline-start: 12px; top: -60px; z-index: 200;
+  background: var(--ink); color: #fff; padding: 9px 14px; border-radius: 12px;
+  font-size: 13px; text-decoration: none; transition: top .18s;
+}
+.wjf-skip:focus { top: 12px; }
+
+/* ---------- هدر هوشمند ---------- */
+.topbar { transition: transform .22s ease; }
+html.wjf-head-hide .topbar { transform: translateY(-115%); }
+
+/* ---------- تنظیمات خواندن ---------- */
+html[data-wjf-wide="1"] .post { width: 100%; max-width: 1040px; margin-inline: auto; }
+html[data-wjf-wide="1"] .post-content { max-width: none; }
+html[data-wjf-line] .post-content { line-height: var(--wjf-lh, 2); }
+html[data-wjf-simple="1"] body,
+html[data-wjf-simple="1"] .post-content,
+html[data-wjf-simple="1"] button,
+html[data-wjf-simple="1"] input,
+html[data-wjf-simple="1"] select,
+html[data-wjf-simple="1"] textarea { font-family: Tahoma, "Segoe UI", Arial, sans-serif !important; }
+html[data-wjf-links="1"] a { text-decoration: underline !important; text-underline-offset: 4px; }
+html[data-wjf-contrast="1"] { --line: #2b2440; --muted: #3c3557; }
+html[data-wjf-contrast="1"] body { background: #fff; }
+html[data-wjf-contrast="1"] .card,
+html[data-wjf-contrast="1"] .post,
+html[data-wjf-contrast="1"] .archive,
+html[data-wjf-contrast="1"] .wjf-drawer,
+html[data-wjf-contrast="1"] .wjf-tools { border-color: #2b2440 !important; }
+html[data-wjf-contrast="1"] .post-content { color: #111; }
+html[data-wjf-contrast="1"] .post-content a,
+html[data-wjf-contrast="1"] .card-title { color: #0b3d91; }
+html[data-wjf-motion="1"] *,
+html[data-wjf-motion="1"] *::before,
+html[data-wjf-motion="1"] *::after {
+  animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important; scroll-behavior: auto !important;
+}
+html[data-wjf-tap="1"] button,
+html[data-wjf-tap="1"] .share-btn,
+html[data-wjf-tap="1"] .chip,
+html[data-wjf-tap="1"] .wjf-btn { min-height: 44px; }
+html[data-wjf-contrast="1"] :focus-visible,
+html:not([data-wjf-contrast="1"]) :focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+
+/* حالت کاغذی (فقط در تم روشن) */
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) { --cream: #f6ecd8; --line: #e2d2b4; }
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) body { background: #f6ecd8; }
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) .post,
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) .card,
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) .archive { background: #fffaf0; border-color: #e6d7ba; }
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) .post-content { color: #43382a; }
+html[data-wjf-sepia="1"]:not([data-theme="dark"]) .topbar { background: #fffaf0; }
+
+/* حالت تمرکز */
+html[data-wjf-focus="1"] .footer,
+html[data-wjf-focus="1"] .related,
+html[data-wjf-focus="1"] .share-row,
+html[data-wjf-focus="1"] .hero,
+html[data-wjf-focus="1"] .quickbar,
+html[data-wjf-focus="1"] .wjf-quickbar { opacity: .3; transition: opacity .2s; }
+html[data-wjf-focus="1"] .footer:hover,
+html[data-wjf-focus="1"] .related:hover { opacity: 1; }
+
+/* ---------- جعبه‌ها و دکمه‌های مشترک ---------- */
+.wjf-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 11px;
+  border: 2px solid var(--line); background: #fff; color: var(--ink);
+  font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none;
+  transition: border-color .15s, transform .15s;
+}
+.wjf-btn:hover { border-color: var(--coral); transform: translateY(-1px); }
+.wjf-btn.is-on { background: linear-gradient(135deg, var(--coral), var(--grape)); border-color: transparent; color: #fff; }
+.wjf-btn[disabled] { opacity: .5; cursor: default; }
+.wjf-input, .wjf-select {
+  font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 10px;
+  border: 2px solid var(--line); background: #fff; color: var(--ink); max-width: 100%;
+}
+.wjf-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+.wjf-row:last-child { border-bottom: 0; }
+.wjf-row label { font-size: 13.5px; }
+.wjf-muted { color: var(--muted); font-size: 12.5px; line-height: 1.9; }
+.wjf-hidden { display: none !important; }
+
+/* ---------- فهرست مطالب ---------- */
+.wjf-toc {
+  margin: 16px 0 6px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 16px;
+  background: #fffaf4; font-size: 14px;
+}
+.wjf-toc > summary {
+  cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; list-style: none;
+}
+.wjf-toc > summary::-webkit-details-marker { display: none; }
+.wjf-toc > summary::before { content: "☰"; margin-inline-end: 6px; color: var(--coral-dark); }
+.wjf-toc-time { font-weight: 600; font-size: 12px; color: var(--muted); }
+.wjf-toc-list { margin: 10px 0 4px; padding-inline-start: 18px; max-height: 34vh; overflow: auto; }
+.wjf-toc-list li { margin: 5px 0; line-height: 1.7; }
+.wjf-toc-list li.lv2 { margin-inline-start: 14px; font-size: 13px; }
+.wjf-toc-list a { color: var(--ink); text-decoration: none; }
+.wjf-toc-list a:hover, .wjf-toc-list a.is-on { color: var(--coral-dark); font-weight: 800; }
+.wjf-toc-top { margin-top: 8px; }
+.wjf-anchor {
+  border: 0; background: transparent; cursor: pointer; font-size: 12px; opacity: 0;
+  margin-inline-start: 8px; padding: 2px 5px; border-radius: 7px; vertical-align: middle;
+}
+.wjf-anchor:hover { background: #fff0e6; opacity: 1; }
+.post-content h2:hover .wjf-anchor,
+.post-content h3:hover .wjf-anchor,
+.wjf-anchor:focus { opacity: .9; }
+
+/* ---------- نوار ادامه مطالعه ---------- */
+.wjf-resume {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 12px 0; padding: 10px 14px; border-radius: 14px;
+  background: #eef9f3; border: 2px solid #b9e7cf; font-size: 13px;
+}
+.wjf-resume .wjf-btn { padding: 5px 10px; font-size: 12px; }
+
+/* ---------- پست قبلی/بعدی ---------- */
+.wjf-nextprev { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 6px; }
+.wjf-nextprev a {
+  display: flex; flex-direction: column; gap: 3px; padding: 11px 14px; border-radius: 14px;
+  border: 2px solid var(--line); background: #fff; text-decoration: none; color: var(--ink);
+  transition: border-color .15s, transform .15s;
+}
+.wjf-nextprev a:hover { border-color: var(--coral); transform: translateY(-2px); }
+.wjf-nextprev span { font-size: 11.5px; color: var(--muted); }
+.wjf-nextprev b { font-size: 13.5px; line-height: 1.7; }
+
+/* ---------- ابزارهای پست ---------- */
+.wjf-tools {
+  margin: 14px 0 4px; padding: 10px 12px; border: 2px solid var(--line);
+  border-radius: 16px; background: #fffaf4; display: flex; flex-direction: column; gap: 8px;
+}
+.wjf-tools-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.wjf-tool {
+  display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 10px;
+  border: 2px solid var(--line); background: #fff; color: var(--ink); font-family: inherit;
+  font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.wjf-tool:hover { border-color: var(--coral); }
+.wjf-tool.is-on { background: #ffeaf0; border-color: var(--coral); }
+.wjf-tool b { font-size: 11px; opacity: .75; }
+.wjf-stars { display: inline-flex; align-items: center; gap: 1px; padding: 3px 6px; border-radius: 10px; border: 2px solid var(--line); background: #fff; }
+.wjf-stars button { border: 0; background: none; cursor: pointer; font-size: 15px; line-height: 1; padding: 2px; color: #d9cbb8; }
+.wjf-stars button.is-on { color: #ffb400; }
+.wjf-emojis { display: inline-flex; gap: 3px; flex-wrap: wrap; }
+.wjf-emojis .wjf-tool { padding: 4px 7px; font-size: 13px; }
+
+/* ---------- نوار ابزار صفحهٔ اصلی ---------- */
+.wjf-homebar {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  margin: 0 0 12px; padding: 9px 12px; border: 2px solid var(--line);
+  border-radius: 14px; background: #fffaf4;
+}
+.wjf-homebar .wjf-count { font-size: 12px; color: var(--muted); margin-inline-start: auto; }
+.wjf-morewrap { text-align: center; margin: -4px 0 22px; }
+
+/* ---------- نوار دسته‌بندی چسبان ---------- */
+.wjf-quickbar {
+  position: sticky; top: 0; z-index: 55; display: flex; align-items: center; gap: 6px;
+  padding: 7px 12px; margin: 0 0 14px; overflow-x: auto; white-space: nowrap;
+  background: var(--cream);
+  background: color-mix(in srgb, var(--cream) 88%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  border-radius: 0 0 14px 14px;
+}
+.wjf-quickbar a {
+  display: inline-flex; align-items: center; gap: 4px; padding: 5px 11px; border-radius: 999px;
+  background: #fff; border: 2px solid var(--line); color: var(--ink);
+  font-size: 12.5px; font-weight: 700; text-decoration: none; flex: 0 0 auto;
+}
+.wjf-quickbar a b { font-size: 10.5px; opacity: .6; }
+.wjf-quickbar a.is-active { background: linear-gradient(135deg, var(--coral), var(--grape)); border-color: transparent; color: #fff; }
+.wjf-quickbar .wjf-btn { flex: 0 0 auto; padding: 5px 10px; font-size: 12px; }
+
+/* ---------- کشف تازه ---------- */
+.wjf-discover { margin: 6px 0 26px; }
+.wjf-disc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.wjf-disc-card { border: 2px solid var(--line); border-radius: 16px; background: #fff; padding: 12px 14px; }
+.wjf-disc-card h3 { margin: 0 0 8px; font-size: 15px; display: flex; gap: 7px; align-items: center; }
+.wjf-disc-card ul { margin: 0; padding: 0; list-style: none; }
+.wjf-disc-card li { margin: 0 0 7px; font-size: 13px; line-height: 1.7; }
+.wjf-disc-card li:last-child { margin-bottom: 0; }
+.wjf-disc-card a { color: var(--ink); text-decoration: none; }
+.wjf-disc-card a:hover { color: var(--coral-dark); }
+.wjf-disc-card small { display: block; color: var(--muted); font-size: 11.5px; }
+.wjf-month { list-style: none; margin: 14px 0 6px !important; font-size: 12.5px; font-weight: 800; color: var(--coral-dark); border: 0 !important; }
+.wjf-month:first-child { margin-top: 4px !important; }
+
+/* ---------- نشان‌ها ---------- */
+.wjf-new, .wjf-upd {
+  position: absolute; top: 10px; left: 10px; z-index: 2; padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 800; color: #fff; background: #18b98a; box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+}
+.wjf-upd { top: auto; bottom: 10px; background: #6b5cff; }
+.card-cover { position: relative; }
+
+/* ---------- جستجوی تازه ---------- */
+.search { position: relative; }
+.wjf-clear {
+  position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%);
+  width: 22px; height: 22px; border-radius: 50%; border: 0; background: #efe8f7;
+  color: #5b5376; font-size: 12px; line-height: 1; cursor: pointer; display: none;
+}
+.wjf-clear.is-on { display: block; }
+.wjf-sug {
+  position: absolute; top: calc(100% + 6px); inset-inline-end: 0; z-index: 75;
+  width: min(330px, 86vw); max-height: 320px; overflow: auto; padding: 9px;
+  background: #fff; color: var(--ink); border: 2px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow); display: none;
+}
+.wjf-sug.is-on { display: block; }
+.wjf-sug-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.wjf-sug-head strong { font-size: 12px; color: var(--muted); }
+.wjf-sug a { display: block; padding: 7px 8px; border-radius: 9px; color: var(--ink); text-decoration: none; font-size: 13px; }
+.wjf-sug a:hover { background: #fff2ea; }
+.wjf-sug a small { display: block; font-size: 11px; color: var(--muted); }
+.wjf-searchmeta { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+.wjf-sug .wjf-input { width: 100%; }
+mark, .post-content mark { background: #ffe680; color: inherit; border-radius: 4px; padding: 0 2px; }
+
+/* ---------- پاپ‌آپ انتخاب متن ---------- */
+.wjf-sel {
+  position: fixed; z-index: 150; display: flex; align-items: center; gap: 4px;
+  padding: 6px; border-radius: 12px; background: #2b2440; color: #fff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .28); font-size: 12px;
+}
+.wjf-sel button { border: 0; border-radius: 8px; padding: 5px 8px; background: rgba(255, 255, 255, .14); color: #fff; font-family: inherit; font-size: 12px; cursor: pointer; }
+.wjf-sel button:hover { background: rgba(255, 255, 255, .28); }
+.wjf-sel .wjf-sel-count { padding: 0 6px; opacity: .8; }
+
+/* ---------- هایلایت و یادداشت ---------- */
+mark.wjf-hl { background: #ffe066; border-radius: 4px; padding: 0 2px; }
+html[data-theme="dark"] mark.wjf-hl { background: #8a6d00; color: #fff; }
+
+/* ---------- پنجره‌ها ---------- */
+.wjf-scrim { position: fixed; inset: 0; z-index: 135; background: rgba(20, 12, 34, .45); }
+.wjf-dialog {
+  position: fixed; z-index: 145; inset-inline: 0; top: 8vh; margin-inline: auto;
+  width: min(560px, 94vw); max-height: 82vh; display: flex; flex-direction: column;
+  background: #fff; color: var(--ink); border: 2px solid var(--line); border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(20, 10, 40, .3); overflow: hidden;
+}
+.wjf-dialog .wjf-drawer-body { padding: 12px 16px 18px; }
+.wjf-dialog textarea.wjf-input { resize: vertical; }
+.wjf-searchmeta:empty { display: none; }
+.wjf-morewrap[hidden] { display: none !important; }
+.wjf-listview { grid-template-columns: 1fr !important; }
+.wjf-listview .card-link { display: flex; align-items: stretch; gap: 12px; }
+.wjf-listview .card-cover { width: 130px; min-height: 96px; flex: 0 0 130px; }
+.wjf-listview .card-cover-img { height: 100%; object-fit: cover; }
+.wjf-listview .card-body { flex: 1 1 auto; }
+.wjf-meta-count { font-size: 11.5px; color: var(--muted); }
+.wjf-tool[href] { text-decoration: none; }
+.wjf-drawer-body .wjf-pane > h4:first-child { margin-top: 2px; }
+.wjf-drawer-body textarea, .wjf-drawer-body input, .wjf-drawer-body select { font-family: inherit; }
+.wjf-scrim[hidden], .wjf-drawer[hidden], .wjf-modal[hidden], .wjf-lightbox[hidden] { display: none !important; }
+.wjf-drawer {
+  position: fixed; inset-block: 0; inset-inline-end: 0; z-index: 140; width: min(390px, 94vw);
+  display: flex; flex-direction: column; background: #fff; color: var(--ink);
+  border-inline-start: 2px solid var(--line); box-shadow: -18px 0 40px rgba(20, 10, 40, .22);
+}
+.wjf-drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px; border-bottom: 2px solid var(--line); }
+.wjf-drawer-head strong { font-size: 15px; }
+.wjf-drawer-body { flex: 1 1 auto; overflow: auto; padding: 10px 14px 22px; }
+.wjf-x { border: 0; background: #f1ecf9; color: var(--ink); width: 30px; height: 30px; border-radius: 9px; cursor: pointer; font-size: 14px; }
+.wjf-tabs { display: flex; gap: 4px; padding: 8px 12px 0; flex-wrap: wrap; }
+.wjf-tab { border: 0; background: #f6f1fb; color: var(--ink); border-radius: 9px 9px 0 0; padding: 7px 10px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.wjf-tab.is-on { background: linear-gradient(135deg, var(--coral), var(--grape)); color: #fff; }
+.wjf-pane { display: none; }
+.wjf-pane.is-on { display: block; }
+.wjf-pane h4 { margin: 14px 0 4px; font-size: 13px; color: var(--coral-dark); }
+.wjf-pane h4:first-child { margin-top: 4px; }
+.wjf-list { list-style: none; margin: 0; padding: 0; }
+.wjf-list li { display: flex; align-items: flex-start; gap: 7px; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 13px; line-height: 1.7; }
+.wjf-list li:last-child { border-bottom: 0; }
+.wjf-list a { color: var(--ink); text-decoration: none; flex: 1 1 auto; }
+.wjf-list a:hover { color: var(--coral-dark); }
+.wjf-list small { display: block; color: var(--muted); font-size: 11px; }
+.wjf-list .wjf-x { width: 22px; height: 22px; font-size: 11px; flex: 0 0 auto; }
+.wjf-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.wjf-chipset { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; }
+.wjf-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; background: #f3eefc; color: #5d5178; }
+.wjf-badge.is-on { background: #e2f8ee; color: #127a55; }
+
+/* ---------- لایت‌باکس ---------- */
+.wjf-lightbox {
+  position: fixed; inset: 0; z-index: 160; background: rgba(10, 5, 20, .92);
+  display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px;
+}
+.wjf-lightbox img { max-width: 94vw; max-height: 82vh; border-radius: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, .5); background: #fff; }
+.wjf-lightbox .wjf-lb-cap { color: #fff; font-size: 13px; margin-top: 10px; text-align: center; max-width: 80vw; }
+.wjf-lightbox .wjf-x, .wjf-lightbox .wjf-lb-nav {
+  position: absolute; top: 14px; inset-inline-end: 14px; background: rgba(255, 255, 255, .2); color: #fff;
+}
+.wjf-lightbox .wjf-lb-nav {
+  top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 50%;
+  font-size: 20px; cursor: pointer; background: rgba(255, 255, 255, .18); color: #fff;
+}
+.wjf-lightbox .wjf-lb-prev { inset-inline-end: auto; inset-inline-start: 14px; }
+
+/* ---------- آفلاین و نصب ---------- */
+.wjf-offline {
+  position: fixed; inset-inline: 0; top: 0; z-index: 170; padding: 6px 12px; text-align: center;
+  background: #3b2f55; color: #fff; font-size: 12.5px; font-weight: 700;
+}
+.wjf-offline[hidden] { display: none !important; }
+
+/* ---------- ادیتور ---------- */
+#editorApp.wjf-editor-focus {
+  position: fixed; inset: 0; z-index: 120; background: #fff; color: var(--ink);
+  padding: 14px; overflow: auto; border-radius: 0;
+}
+#editorApp.wjf-editor-focus .editor-fields .field-row,
+#editorApp.wjf-editor-focus .admin-list-head,
+#editorApp.wjf-editor-focus #adminList,
+#editorApp.wjf-editor-focus .seo-hints,
+#editorApp.wjf-editor-focus .draft-bar,
+#editorApp.wjf-editor-focus .editor-tools-extra { display: none !important; }
+#editorApp.wjf-editor-focus .editor-area { min-height: 55vh; font-size: 18px; }
+html[data-wjf-tools="0"] .read-tools button:not(#wjfOpenDrawer) { display: none; }
+#wjfOpenDrawer { font-size: 15px; }
+
+/* ---------- چاپ تمیز ---------- */
+@media print {
+  .topbar, .footer, .read-tools, .to-top, .progress, .dock, .share-row, .related,
+  .wjf-tools, .wjf-quickbar, .wjf-drawer, .wjf-scrim, .wjf-toc, .wjf-homebar,
+  .wjf-discover, .wjf-nextprev, .wjf-resume, .wjf-sel, .wjf-lightbox, .breadcrumbs,
+  .crumbs, .wjf-offline, .wjf-morewrap { display: none !important; }
+  body, .post { background: #fff !important; box-shadow: none !important; border: 0 !important; }
+  .post { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  .post-content { font-size: 12pt !important; line-height: 1.9 !important; color: #000 !important; }
+  .post-cover { max-height: 220px; object-fit: cover; }
+  a { color: #000 !important; }
+}
+
+@media (max-width: 760px) {
+  .wjf-tools { padding: 8px; }
+  .wjf-nextprev { grid-template-columns: 1fr; }
+  .wjf-homebar { gap: 5px; padding: 7px 9px; }
+  .wjf-homebar .wjf-select, .wjf-homebar .wjf-btn { font-size: 11.5px; padding: 5px 8px; }
+  .wjf-quickbar { margin-bottom: 10px; }
+  .wjf-drawer { width: 100vw; }
+  .wjf-sug { width: min(300px, 92vw); }
+  .wjf-searchmeta { display: none; }
+  .wjf-disc-grid { grid-template-columns: 1fr; }
+  .wjf-toc-list { max-height: 30vh; }
+}
